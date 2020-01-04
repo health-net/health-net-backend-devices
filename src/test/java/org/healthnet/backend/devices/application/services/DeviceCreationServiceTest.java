@@ -1,6 +1,6 @@
 package org.healthnet.backend.devices.application.services;
 
-import org.healthnet.backend.devices.application.dtos.CreateDeviceDto;
+import org.healthnet.backend.devices.application.dtos.DeviceCreationDto;
 import org.healthnet.backend.devices.domain.device.Device;
 import org.healthnet.backend.devices.domain.device.DeviceRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
-public class CreateDeviceServiceTest {
-    private final static CreateDeviceDto createDeviceDto = mock(CreateDeviceDto.class);
+public class DeviceCreationServiceTest {
+    private final static DeviceCreationDto deviceCreationDto = mock(DeviceCreationDto.class);
     private final static Device device = mock(Device.class);
-    private final static Function<CreateDeviceDto, Device> deviceFactory = mock(Function.class);
+    private final static Function<DeviceCreationDto, Device> deviceFactory = mock(Function.class);
     private final static DeviceRepository deviceRepository = mock(DeviceRepository.class);
-    private final static Consumer<CreateDeviceDto> createDeviceService = new CreateDeviceService(deviceRepository, deviceFactory);
+    private final static Consumer<DeviceCreationDto> createDeviceService = new DeviceCreationService(deviceRepository, deviceFactory);
 
     @BeforeEach
     void resetMocks() {
@@ -27,24 +27,24 @@ public class CreateDeviceServiceTest {
 
     @Test
     void Accept_SuccessfulExecution_DeviceHasBeenStored() {
-        when(deviceFactory.apply(createDeviceDto)).thenReturn(device);
-        createDeviceService.accept(createDeviceDto);
+        when(deviceFactory.apply(deviceCreationDto)).thenReturn(device);
+        createDeviceService.accept(deviceCreationDto);
         verify(deviceRepository).add(device);
     }
 
     @Test
     void Accept_DeviceAlreadyExist_IllegalStateExceptionHasBeenThrown() {
-        when(deviceFactory.apply(createDeviceDto)).thenReturn(device);
+        when(deviceFactory.apply(deviceCreationDto)).thenReturn(device);
         doThrow(IllegalStateException.class).when(deviceRepository).add(device);
 
-        assertThrows(IllegalStateException.class, () -> createDeviceService.accept(createDeviceDto));
+        assertThrows(IllegalStateException.class, () -> createDeviceService.accept(deviceCreationDto));
     }
 
     @Test
     void Accept_InvalidDeviceData_IllegalArgumentExceptionHasBeenThrown() {
-        when(deviceFactory.apply(createDeviceDto)).thenThrow(IllegalArgumentException.class);
+        when(deviceFactory.apply(deviceCreationDto)).thenThrow(IllegalArgumentException.class);
 
-        assertThrows(IllegalArgumentException.class, () -> createDeviceService.accept(createDeviceDto));
+        assertThrows(IllegalArgumentException.class, () -> createDeviceService.accept(deviceCreationDto));
         verifyNoInteractions(deviceRepository);
     }
 }

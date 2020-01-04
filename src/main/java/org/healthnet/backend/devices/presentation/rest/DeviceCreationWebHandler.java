@@ -1,16 +1,16 @@
 package org.healthnet.backend.devices.presentation.rest;
 
-import org.healthnet.backend.devices.application.dtos.CreateDeviceDto;
+import org.healthnet.backend.devices.application.dtos.DeviceCreationDto;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class CreateDeviceWebHandler implements WebHandler {
-    private final Consumer<CreateDeviceDto> createDeviceService;
-    private final Function<WebRequest, CreateDeviceDto> deserialization;
+public class DeviceCreationWebHandler implements WebHandler {
+    private final Consumer<DeviceCreationDto> createDeviceService;
+    private final Function<WebRequest, DeviceCreationDto> deserialization;
 
-    public CreateDeviceWebHandler(Consumer<CreateDeviceDto> createDeviceService,
-                                  Function<WebRequest, CreateDeviceDto> deserialization) {
+    public DeviceCreationWebHandler(Consumer<DeviceCreationDto> createDeviceService,
+                                    Function<WebRequest, DeviceCreationDto> deserialization) {
         this.createDeviceService = createDeviceService;
         this.deserialization = deserialization;
     }
@@ -29,8 +29,8 @@ public class CreateDeviceWebHandler implements WebHandler {
     }
 
     private WebResponse handleWebRequest(WebRequest webRequest) {
-        CreateDeviceDto createDeviceDto = deserialization.apply(webRequest);
-        createDeviceService.accept(createDeviceDto);
+        DeviceCreationDto deviceCreationDto = deserialization.apply(webRequest);
+        createDeviceService.accept(deviceCreationDto);
         return new WebResponse(WebResponse.Status.CREATED);
     }
 }

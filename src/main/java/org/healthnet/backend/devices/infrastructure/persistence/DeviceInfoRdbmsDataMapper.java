@@ -8,7 +8,9 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class DeviceInfoRdbmsDataMapper extends DeviceInfoDataMapper {
     private final DataSource dataSource;
@@ -43,6 +45,24 @@ public class DeviceInfoRdbmsDataMapper extends DeviceInfoDataMapper {
                         new DeviceName(result.getString("name"))
                 ));
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Set<DeviceInfo> getAll() {
+        try (var connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM `devices_info`");
+            ResultSet result = statement.executeQuery();
+            HashSet<DeviceInfo> set = new HashSet<>();
+            while(result.next()) {
+                set.add(new DeviceInfo(
+                        new DeviceId(result.getString("id")),
+                        new DeviceName(result.getString("name"))
+                ));
+            }
+            return set;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

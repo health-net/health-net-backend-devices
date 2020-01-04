@@ -1,10 +1,10 @@
 package org.healthnet.backend.devices.application.dtos;
 
-public class CreateDeviceDto {
+public class FetchedDeviceDto {
     public final String id;
     public final String name;
 
-    public CreateDeviceDto(String id, String name) {
+    public FetchedDeviceDto(String id, String name) {
         this.id = id;
         this.name = name;
     }
