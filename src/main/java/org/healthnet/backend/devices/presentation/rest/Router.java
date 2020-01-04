@@ -20,7 +20,7 @@ public class Router implements WebHandler {
         if(webRequest.getPath().matches("(/?)") && webRequest.getMethod().equals("GET")) {
             return selectAllDevicesWebHandler.handle(webRequest);
         }
-        if(webRequest.getPath().matches("(/devices)") && webRequest.getMethod().equals("GET")) {
+        if(webRequest.getPath().matches("(/devices/\\S+)") && webRequest.getMethod().equals("GET")) {
             return selectDeviceByIDWebHandler.handle(webRequest);
         }
         return new WebResponse(WebResponse.Status.NOT_FOUND);

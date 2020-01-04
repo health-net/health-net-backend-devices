@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
@@ -48,9 +50,13 @@ public class Main {
 
         Function<DeviceSelectionDto, FetchedDeviceDto> selectDeviceByIDService = new DeviceSelectionByIDService(deviceRepository);
 
+        Pattern pattern = Pattern.compile("/devices/(\\S+)");
         WebHandler selectDeviceByIDWebHandler = new DeviceSelectionByIDWebHandler(
                 selectDeviceByIDService,
-                webRequest -> new Gson().fromJson(webRequest.getBodyContent(), DeviceSelectionDto.class),
+                webRequest -> {
+                    Matcher matcher = pattern.matcher(webRequest.getPath());
+                    return new DeviceSelectionDto(matcher.group(1), null);
+                },
                 fetchDto -> new Gson().toJson(fetchDto, FetchedDeviceDto.class)
         );
 
