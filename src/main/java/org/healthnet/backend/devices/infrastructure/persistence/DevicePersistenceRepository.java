@@ -26,18 +26,18 @@ public class DevicePersistenceRepository extends DeviceRepository {
 
     @Override
     public Device getByID(DeviceId id) {
-        Optional<DeviceInfo> result = deviceInfoDataMapper.select(id);
+        Optional<DeviceInfo> result = deviceInfoDataMapper.selectByDeviceId(id);
         if(result.isEmpty()) throw new IllegalArgumentException();
         else return new Device(result.get());
     }
 
     @Override
     public Set<Device> getAll() {
-        return deviceInfoDataMapper.getAll().stream().map(info -> new Device(info)).collect(Collectors.toSet());
+        return deviceInfoDataMapper.selectAll().stream().map(Device::new).collect(Collectors.toSet());
     }
 
     private boolean contains(Device device) {
-        return deviceInfoDataMapper.select(device.getId()).isPresent();
+        return deviceInfoDataMapper.selectByDeviceId(device.getId()).isPresent();
     }
 }
 

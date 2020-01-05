@@ -5,10 +5,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.healthnet.backend.devices.application.dtos.DeviceCreationDto;
 import org.healthnet.backend.devices.application.dtos.DeviceSelectionDto;
-import org.healthnet.backend.devices.application.dtos.FetchedDeviceDto;
+import org.healthnet.backend.devices.application.dtos.DeviceDetailDto;
 import org.healthnet.backend.devices.application.services.DeviceCreationService;
-import org.healthnet.backend.devices.application.services.DeviceSelectAllService;
-import org.healthnet.backend.devices.application.services.DeviceSelectionByIDService;
+import org.healthnet.backend.devices.application.services.DeviceRegisterService;
+import org.healthnet.backend.devices.application.services.DeviceDetailService;
 import org.healthnet.backend.devices.domain.device.*;
 import org.healthnet.backend.devices.infrastructure.persistence.DeviceInfoDataMapper;
 import org.healthnet.backend.devices.infrastructure.persistence.DeviceInfoRdbmsDataMapper;
@@ -48,29 +48,29 @@ public class Main {
                 webRequest -> new Gson().fromJson(webRequest.getBodyContent(), DeviceCreationDto.class)
         );
 
-        Function<DeviceSelectionDto, FetchedDeviceDto> selectDeviceByIDService = new DeviceSelectionByIDService(deviceRepository);
+        Function<DeviceSelectionDto, DeviceDetailDto> selectDeviceByIDService = new DeviceDetailService(deviceRepository);
 
         Pattern pattern = Pattern.compile("/devices/(\\S+)");
-        WebHandler selectDeviceByIDWebHandler = new DeviceSelectionByIDWebHandler(
+        WebHandler selectDeviceByIDWebHandler = new DeviceDetailWebHandler(
                 selectDeviceByIDService,
                 webRequest -> {
                     Matcher matcher = pattern.matcher(webRequest.getPath());
                     return new DeviceSelectionDto(matcher.group(1), null);
                 },
-                fetchDto -> new Gson().toJson(fetchDto, FetchedDeviceDto.class)
+                fetchDto -> new Gson().toJson(fetchDto, DeviceDetailDto.class)
         );
 
-        Supplier<Set<FetchedDeviceDto>> selectAllDevicesService = new DeviceSelectAllService(deviceRepository);
+        Supplier<Set<DeviceDetailDto>> selectAllDevicesService = new DeviceRegisterService(deviceRepository);
 
-        WebHandler selectAllDevicesWebHandler = new DeviceSelectAllWebHandler(selectAllDevicesService, set -> new Gson().toJson(set));
+        WebHandler selectAllDevicesWebHandler = new DevicesRegisterWebHandler(selectAllDevicesService, set -> new Gson().toJson(set));
 
-        WebHandler router = new Router(createDeviceWebHandler, selectDeviceByIDWebHandler, selectAllDevicesWebHandler);
+        WebHandler router = new DeviceRouter(createDeviceWebHandler, selectDeviceByIDWebHandler, selectAllDevicesWebHandler);
 
         HttpServlet devicesServlet = new DevicesServlet(router);
 
         int port = Integer.parseInt(System.getenv().getOrDefault("HEALTHNET_PORT", "8080"));
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
-        servletContextHandler.addServlet(new ServletHolder(devicesServlet), "/devices");
+        servletContextHandler.addServlet(new ServletHolder(devicesServlet), "/devices/*");
         JettyEmbeddedServer server = new JettyEmbeddedServer(port, servletContextHandler);
         try {
             server.start();

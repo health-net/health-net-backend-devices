@@ -21,6 +21,10 @@ public class WebRequest {
         return method;
     }
 
+    public boolean is(String method, String regex) {
+        return this.path.matches(regex) && this.method.equals(method);
+    }
+
     public Reader getBodyContent() {
         return reader;
     }

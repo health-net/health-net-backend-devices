@@ -1,19 +1,18 @@
 package org.healthnet.backend.devices.presentation.rest;
 
 import org.healthnet.backend.devices.application.dtos.DeviceSelectionDto;
-import org.healthnet.backend.devices.application.dtos.FetchedDeviceDto;
+import org.healthnet.backend.devices.application.dtos.DeviceDetailDto;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class DeviceSelectionByIDWebHandler implements WebHandler {
-    private final Function<DeviceSelectionDto, FetchedDeviceDto> selectDeviceService;
+public class DeviceDetailWebHandler implements WebHandler {
+    private final Function<DeviceSelectionDto, DeviceDetailDto> selectDeviceService;
     private final Function<WebRequest, DeviceSelectionDto> deserialization;
-    private final Function<FetchedDeviceDto, String> serialization;
+    private final Function<DeviceDetailDto, String> serialization;
 
-    public DeviceSelectionByIDWebHandler(Function<DeviceSelectionDto, FetchedDeviceDto> selectDeviceService,
-                                    Function<WebRequest, DeviceSelectionDto> deserialization,
-                                         Function<FetchedDeviceDto, String> serialization) {
+    public DeviceDetailWebHandler(Function<DeviceSelectionDto, DeviceDetailDto> selectDeviceService,
+                                  Function<WebRequest, DeviceSelectionDto> deserialization,
+                                  Function<DeviceDetailDto, String> serialization) {
         this.selectDeviceService = selectDeviceService;
         this.deserialization = deserialization;
         this.serialization = serialization;

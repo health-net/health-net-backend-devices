@@ -28,7 +28,7 @@ public class DevicePersistenceRepositoryTest {
         DeviceInfo info = mock(DeviceInfo.class);
         when(device.getId()).thenReturn(id);
         when(device.getInfo()).thenReturn(info);
-        when(deviceInfoDataMapper.select(id)).thenReturn(Optional.of(info));
+        when(deviceInfoDataMapper.selectByDeviceId(id)).thenReturn(Optional.of(info));
         assertThrows(IllegalStateException.class, () -> deviceRepository.add(device));
     }
 }

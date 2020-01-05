@@ -40,7 +40,7 @@ public class DeviceInfoDataMapperTest {
         DeviceInfo expectedInfo = aDeviceInfo();
         insert(expectedInfo);
 
-        Optional<DeviceInfo> actualInfo = dataMapper.select(expectedInfo.getId());
+        Optional<DeviceInfo> actualInfo = dataMapper.selectByDeviceId(expectedInfo.getId());
         assertTrue(actualInfo.isPresent());
         assertEquals(expectedInfo, actualInfo.get());
     }
@@ -49,7 +49,7 @@ public class DeviceInfoDataMapperTest {
     void Select_DeviceInfoIsNotPresent_OptionalOfEmptyHasBeenReturned() throws Exception {
         DeviceInfo expectedInfo = aDeviceInfo();
 
-        Optional<DeviceInfo> actualInfo = dataMapper.select(expectedInfo.getId());
+        Optional<DeviceInfo> actualInfo = dataMapper.selectByDeviceId(expectedInfo.getId());
         assertTrue(actualInfo.isEmpty());
     }
 

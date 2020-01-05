@@ -8,6 +8,6 @@ import java.util.Set;
 
 public abstract class DeviceInfoDataMapper {
     public abstract void insert(DeviceInfo info);
-    public abstract Optional<DeviceInfo> select(DeviceId deviceId);
-    public abstract Set<DeviceInfo> getAll();
+    public abstract Optional<DeviceInfo> selectByDeviceId(DeviceId deviceId);
+    public abstract Set<DeviceInfo> selectAll();
 }

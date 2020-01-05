@@ -32,7 +32,7 @@ public class DeviceInfoRdbmsDataMapper extends DeviceInfoDataMapper {
     }
 
     @Override
-    public Optional<DeviceInfo> select(DeviceId deviceId) {
+    public Optional<DeviceInfo> selectByDeviceId(DeviceId deviceId) {
         try (var connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM `devices_info` WHERE id=(?)");
             statement.setString(1, deviceId.getValue());
@@ -51,7 +51,7 @@ public class DeviceInfoRdbmsDataMapper extends DeviceInfoDataMapper {
     }
 
     @Override
-    public Set<DeviceInfo> getAll() {
+    public Set<DeviceInfo> selectAll() {
         try (var connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM `devices_info`");
             ResultSet result = statement.executeQuery();
