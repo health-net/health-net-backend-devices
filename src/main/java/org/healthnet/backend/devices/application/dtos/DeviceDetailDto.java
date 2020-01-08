@@ -1,11 +1,12 @@
 package org.healthnet.backend.devices.application.dtos;
 
-public class DeviceDetailDto {
-    public final String id;
+import java.io.Serializable;
+
+public class DeviceDetailDto extends DeviceDto implements Serializable {
     public final String name;
 
     public DeviceDetailDto(String id, String name) {
-        this.id = id;
+        super(id);
         this.name = name;
     }
 }

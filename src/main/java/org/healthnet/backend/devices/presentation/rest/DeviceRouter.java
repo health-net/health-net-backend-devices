@@ -19,6 +19,7 @@ public class DeviceRouter implements WebHandler {
         } else if (webRequest.is("GET", "(/?)$")) {
             return registerWebHandler.handle(webRequest);
         } else if (webRequest.is("GET", "(/)(.+)(/?)$")) {
+            System.out.println("questo fra "+webRequest.getPath());
             return detailWebHandler.handle(webRequest);
         } else {
             return new WebResponse(WebResponse.Status.NOT_FOUND);

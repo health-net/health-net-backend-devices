@@ -19,16 +19,13 @@ public class DevicesRegisterWebHandler implements WebHandler {
     public WebResponse handle(WebRequest webRequest) {
         try {
             return handleWebRequest(webRequest);
-        } catch (IllegalArgumentException e) {
-            return new WebResponse(WebResponse.Status.BAD_REQUEST);
-        } catch (IllegalStateException e) {
-            return new WebResponse(WebResponse.Status.CONFLICT);
         } catch (RuntimeException e) {
             return new WebResponse(WebResponse.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
     private WebResponse handleWebRequest(WebRequest webRequest) {
+        System.out.println("fraaaa");
         return new WebResponse(WebResponse.Status.OK, serialization.apply(selectAllDevicesService.get()));
     }
 }

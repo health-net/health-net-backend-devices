@@ -15,6 +15,10 @@ import org.healthnet.backend.devices.infrastructure.persistence.DeviceInfoRdbmsD
 import org.healthnet.backend.devices.infrastructure.persistence.DevicePersistenceRepository;
 import org.healthnet.backend.devices.infrastructure.persistence.tools.DevicesDataSource;
 import org.healthnet.backend.devices.presentation.rest.*;
+import org.healthnet.backend.devices.presentation.rest.mappers.Deserializer;
+import org.healthnet.backend.devices.presentation.rest.mappers.DeviceDetailDtoToJSON;
+import org.healthnet.backend.devices.presentation.rest.mappers.JSONToDeviceCreationDto;
+import org.healthnet.backend.devices.presentation.rest.mappers.Serializer;
 import org.healthnet.backend.devices.presentation.tools.jetty.DevicesServlet;
 import org.healthnet.backend.devices.presentation.tools.jetty.JettyEmbeddedServer;
 
@@ -38,29 +42,27 @@ public class Main {
         Consumer<DeviceCreationDto> createDeviceService = new DeviceCreationService(
                 deviceRepository,
                 createDeviceDto -> new Device(new DeviceInfo(
-                        new DeviceId(createDeviceDto.id),
+                        new DeviceId(createDeviceDto.getId()),
                         new DeviceName(createDeviceDto.name)
                 ))
         );
 
+        Deserializer<DeviceCreationDto> JSONToDto = new JSONToDeviceCreationDto();
         WebHandler createDeviceWebHandler = new DeviceCreationWebHandler(
                 createDeviceService,
-                webRequest -> new Gson().fromJson(webRequest.getBodyContent(), DeviceCreationDto.class)
+                JSONToDto.get()
         );
 
-        Function<DeviceSelectionDto, DeviceDetailDto> selectDeviceByIDService = new DeviceDetailService(deviceRepository);
-
-        Pattern pattern = Pattern.compile("/devices/(\\S+)");
+        Function<String, DeviceDetailDto> selectDeviceByIDService = new DeviceDetailService(deviceRepository);
+        Serializer<DeviceDetailDto> dtoToJSON = new DeviceDetailDtoToJSON();
         WebHandler selectDeviceByIDWebHandler = new DeviceDetailWebHandler(
                 selectDeviceByIDService,
-                webRequest -> {
-                    Matcher matcher = pattern.matcher(webRequest.getPath());
-                    return new DeviceSelectionDto(matcher.group(1), null);
-                },
-                fetchDto -> new Gson().toJson(fetchDto, DeviceDetailDto.class)
+                webRequest -> new DeviceSelectionDto(webRequest.getPath().substring(1), null),
+                dtoToJSON.get()
         );
 
         Supplier<Set<DeviceDetailDto>> selectAllDevicesService = new DeviceRegisterService(deviceRepository);
+
 
         WebHandler selectAllDevicesWebHandler = new DevicesRegisterWebHandler(selectAllDevicesService, set -> new Gson().toJson(set));
 

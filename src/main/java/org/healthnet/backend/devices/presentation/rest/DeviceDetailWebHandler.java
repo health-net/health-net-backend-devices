@@ -3,14 +3,15 @@ package org.healthnet.backend.devices.presentation.rest;
 import org.healthnet.backend.devices.application.dtos.DeviceSelectionDto;
 import org.healthnet.backend.devices.application.dtos.DeviceDetailDto;
 
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 public class DeviceDetailWebHandler implements WebHandler {
-    private final Function<DeviceSelectionDto, DeviceDetailDto> selectDeviceService;
+    private final Function<String, DeviceDetailDto> selectDeviceService;
     private final Function<WebRequest, DeviceSelectionDto> deserialization;
-    private final Function<DeviceDetailDto, String> serialization;
+    private final Function<? super DeviceDetailDto, String> serialization;
 
-    public DeviceDetailWebHandler(Function<DeviceSelectionDto, DeviceDetailDto> selectDeviceService,
+    public DeviceDetailWebHandler(Function<String, DeviceDetailDto> selectDeviceService,
                                   Function<WebRequest, DeviceSelectionDto> deserialization,
                                   Function<DeviceDetailDto, String> serialization) {
         this.selectDeviceService = selectDeviceService;
@@ -21,18 +22,19 @@ public class DeviceDetailWebHandler implements WebHandler {
     @Override
     public WebResponse handle(WebRequest webRequest) {
         try {
+            System.out.println("fra");
             return handleWebRequest(webRequest);
-        } catch (IllegalArgumentException e) {
-            return new WebResponse(WebResponse.Status.BAD_REQUEST);
-        } catch (IllegalStateException e) {
-            return new WebResponse(WebResponse.Status.CONFLICT);
+        } catch (NoSuchElementException e) {
+            return new WebResponse(WebResponse.Status.NOT_FOUND);
         } catch (RuntimeException e) {
             return new WebResponse(WebResponse.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
     private WebResponse handleWebRequest(WebRequest webRequest) {
+        System.out.println("porcodio fra");
         DeviceSelectionDto deviceSelectionDto = deserialization.apply(webRequest);
-        return new WebResponse(WebResponse.Status.OK, serialization.apply(selectDeviceService.apply(deviceSelectionDto)));
+        System.out.println("fra2"+deviceSelectionDto.name+" "+deviceSelectionDto.getId());
+        return new WebResponse(WebResponse.Status.OK, serialization.apply(selectDeviceService.apply(deviceSelectionDto.getId())));
     }
 }

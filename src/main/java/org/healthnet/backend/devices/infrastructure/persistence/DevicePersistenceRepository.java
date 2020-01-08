@@ -5,6 +5,7 @@ import org.healthnet.backend.devices.domain.device.DeviceId;
 import org.healthnet.backend.devices.domain.device.DeviceInfo;
 import org.healthnet.backend.devices.domain.device.DeviceRepository;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class DevicePersistenceRepository extends DeviceRepository {
     @Override
     public Device getByID(DeviceId id) {
         Optional<DeviceInfo> result = deviceInfoDataMapper.selectByDeviceId(id);
-        if(result.isEmpty()) throw new IllegalArgumentException();
+        if(result.isEmpty()) throw new NoSuchElementException();
         else return new Device(result.get());
     }
 

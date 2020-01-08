@@ -8,7 +8,7 @@ import org.healthnet.backend.devices.domain.device.DeviceRepository;
 
 import java.util.function.Function;
 
-public class DeviceDetailService implements Function<DeviceSelectionDto, DeviceDetailDto> {
+public class DeviceDetailService implements Function<String, DeviceDetailDto> {
     private final DeviceRepository deviceRepository;
 
     public DeviceDetailService(DeviceRepository deviceRepository) {
@@ -16,8 +16,8 @@ public class DeviceDetailService implements Function<DeviceSelectionDto, DeviceD
     }
 
     @Override
-    public DeviceDetailDto apply(DeviceSelectionDto deviceSelectionDto) {
-        Device tmp = deviceRepository.getByID(new DeviceId(deviceSelectionDto.id));
+    public DeviceDetailDto apply(String deviceId) {
+        Device tmp = deviceRepository.getByID(new DeviceId(deviceId));
         return new DeviceDetailDto(tmp.getId().getValue(), tmp.getInfo().getName().getValue());
     }
 }
