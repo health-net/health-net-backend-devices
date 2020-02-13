@@ -1,5 +1,5 @@
 package org.healthnet.backend.devices.presentation.rest;
 
-public interface WebHandler {
-    WebResponse handle(WebRequest webRequest);
+public abstract class WebHandler {
+    public abstract WebResponse handle(WebRequest webRequest);
 }

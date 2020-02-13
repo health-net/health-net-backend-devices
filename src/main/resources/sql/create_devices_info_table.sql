@@ -1,4 +1,0 @@
-CREATE TABLE `devices_info` (
-`id` VARCHAR(40) PRIMARY KEY,
-`name` VARCHAR(500) NOT NULL
-);
