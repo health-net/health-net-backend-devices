@@ -9,7 +9,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 ```
-java 12
+Java 12
 ```
 
 ### Installing
@@ -21,7 +21,7 @@ mvn install
 ## Deployment
 
 1. Set environment variables
-2. Run JAR with dependencies located in /target
+2. Run JAR (with dependencies) located in /target
 
 ## Details
 ### Environment Variables
